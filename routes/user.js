@@ -10,7 +10,7 @@ const profile = async(req, res, next)=>{
 };
 
 const register = async(req, res, next)=>{
-    req.user.name ? res.status(201).json({msg: "registered successfully, user: req.user"}) : res.status(401).json({msg: "User already exists"});
+    req.user.name ? res.status(201).json({msg: "registered successfully", user: req.user}) : res.status(401).json({msg: "User already exists"});
 };
 
 const login = async(req, res, next)=>{
@@ -21,7 +21,7 @@ const login = async(req, res, next)=>{
             } else if (!user){
                 res.status(401).json({msg: "User not found"});
             } else {
-                req.login(user, session, async(error)=> error ? next(error) : res.status(200).json({user, token: jwt.sign({user: {id: user,id, name: user.name}})}));
+                req.login(user, session, async(error)=> error ? next(error) : res.status(200).json({user, token: jwt.sign({user: {id: user.id, name: user.name}}, process.env.SECRET_KEY)}));
             }
         } catch (error){
             return next(error);

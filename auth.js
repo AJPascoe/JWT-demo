@@ -5,7 +5,7 @@ const LocalStrategy = require("passport-local").Strategy;
 
 const User = require("./models/user");
 
-const register = async(name, pasword, done) =>{
+const register = async(name, password, done) =>{
     const saltRounds = 10;
 
     try{
@@ -14,7 +14,7 @@ const register = async(name, pasword, done) =>{
         }
         const salt = await bcrypt.genSalt(saltRounds);
         const hash = await bcrypt.hash(password, salt);
-        const user = await user.build({name, passwordHash: hash});
+        const user = await User.build({name, passwordHash: hash});
         try{
             await user.save();
             done(null, user);
