@@ -3,6 +3,7 @@ const jwt = require("jsonwebtoken");
 const passport = require("passport");
 
 const router = express.Router();
+const session = {session: false};
 
 const profile = async(req, res, next)=>{
     res.status(200).json({msg: "Profile", user: req.user, token: req.query.secret_token});
@@ -13,9 +14,7 @@ const register = async(req, res, next)=>{
 };
 
 const login = async(req, res, next)=>{
-    const session = {session: false};
-
-    passport.authenticate("login", async(err, user, info)=>{
+      passport.authenticate("login", async(err, user, info)=>{
         try{
             if (err){
                 res.status(500).json({msg: "Internal Server Error"});
@@ -31,8 +30,8 @@ const login = async(req, res, next)=>{
 
 };
 
-router.post("/register", register);
-router.get("/profile", profile);
+router.post("/register", passport.authenticate("register", session), register);
+router.get("/profile", passport.authenticate("jwt", session), profile);
 router.post("/login", login);
 
 // router.post("/register", (req, res)=>{

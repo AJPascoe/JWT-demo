@@ -1,5 +1,5 @@
 const bcrypt = require("bcrypt");
-const ExtractJWT = require("passport-jwt").ExtractJWT;
+const ExtractJWT = require("passport-jwt").ExtractJwt;
 const JWTStrategy = require("passport-jwt"). Strategy;
 const LocalStrategy = require("passport-local").Strategy;
 
@@ -49,7 +49,7 @@ const login = async(username, password, done) => {
 
 const verifyStrategy = new JWTStrategy({
     secretOrKey: process.env.SECRET_KEY, 
-    jwtFromRequest: ExtractJwt.fromUrlQuerryParameter("secret_token")
+    jwtFromRequest: ExtractJWT.fromUrlQueryParameter("secret_token")
 }, verify);
 
 const registerStrategy = new LocalStrategy({usernameField: 'name', passwordField: 'password'}, register);
