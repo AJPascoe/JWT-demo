@@ -33,15 +33,31 @@ const verify = async(token, done) => {
         done(error);
     }
 };
-const login = () => {};
+const login = async(username, password, done) => {
+    try{
+        const user = await User.findOne({where: {name: username}});
+        if (!user){
+            return done(null, false, {msg: "Incorrect Username"});
+        }
+
+        const match = await bcrypt.compare(password, user.passwordHash);
+        return match ? done(null, user) : done(null, false, {msg: "Incorrect Password"});
+    } catch(error){
+        done(error);
+    }
+};
 
 const verifyStrategy = new JWTStrategy({
     secretOrKey: process.env.SECRET_KEY, 
     jwtFromRequest: ExtractJwt.fromUrlQuerryParameter("secret_token")
 }, verify);
+
 const registerStrategy = new LocalStrategy({usernameField: 'name', passwordField: 'password'}, register);
+
+const LoginStrategy = new LocalStrategy(login);
 
 module.exports ={
     registerStrategy,
     verifyStrategy,
+    LoginStrategy,
 }
