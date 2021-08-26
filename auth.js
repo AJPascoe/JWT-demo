@@ -26,11 +26,22 @@ const register = async(name, pasword, done) =>{
         done(error);
     }
 };
-const verify = () => {};
+const verify = async(token, done) => {
+    try{
+        done(null, token.user);
+    } catch(error){
+        done(error);
+    }
+};
 const login = () => {};
 
+const verifyStrategy = new JWTStrategy({
+    secretOrKey: process.env.SECRET_KEY, 
+    jwtFromRequest: ExtractJwt.fromUrlQuerryParameter("secret_token")
+}, verify);
 const registerStrategy = new LocalStrategy({usernameField: 'name', passwordField: 'password'}, register);
 
 module.exports ={
     registerStrategy,
+    verifyStrategy,
 }
